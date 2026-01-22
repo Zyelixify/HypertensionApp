@@ -81,6 +81,6 @@ npx expo run:android
 
 The app requires the following permissions to function correctly:
 
-* `android.permission.health.READ_BLOOD_PRESSURE`
-* `android.permission.health.WRITE_BLOOD_PRESSURE`
+* `android.health.connect.HealthPermissions.READ_BLOOD_PRESSURE`
+* `android.health.connect.HealthPermissions.WRITE_BLOOD_PRESSURE`
 * Notification permissions.
