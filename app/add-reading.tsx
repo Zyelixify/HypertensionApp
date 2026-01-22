@@ -1,5 +1,6 @@
 import { useAppTheme } from '@/hooks/useAppTheme';
 import { useUnifiedData } from '@/hooks/useUnifiedData';
+import { NotificationService } from '@/services/NotificationService';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { isSameDay } from 'date-fns';
 import { useRouter } from 'expo-router';
@@ -62,6 +63,22 @@ export default function ModalScreen() {
       const calculatedStreak = hasToday ? currentStreak : (currentStreak === 0 ? 1 : currentStreak + 1);
       setNewStreak(calculatedStreak);
       
+      // Trigger Notifications
+      NotificationService.sendImmediateStreakNotification(calculatedStreak);
+      
+      // Update future notification plan
+      // We optimistically include the new reading to plan correctly for tomorrow
+      const newReadingObj = {
+          systolic: parseInt(systolic),
+          diastolic: parseInt(diastolic),
+          timestamp: Date.now(),
+          id: 'temp-optimistic',
+          source: 'manual' as const
+      };
+      
+      const updatedList = readings ? [...readings, newReadingObj] : [newReadingObj];
+      NotificationService.planNotifications(updatedList, calculatedStreak);
+
       addMutation.mutate({
           systolic: parseInt(systolic),
           diastolic: parseInt(diastolic),

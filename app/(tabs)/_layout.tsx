@@ -1,13 +1,15 @@
 import { useAppTheme } from '@/hooks/useAppTheme';
+import { useUnifiedData } from '@/hooks/useUnifiedData';
+import { NotificationService } from '@/services/NotificationService';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { Tabs, useRouter } from 'expo-router';
-import React from 'react';
+import { useEffect, type ComponentProps } from 'react';
 import { View } from 'react-native';
 
 // You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
 function TabBarIcon(props: {
-  name: React.ComponentProps<typeof FontAwesome>['name'];
+  name: ComponentProps<typeof FontAwesome>['name'];
   color: string;
 }) {
   return <FontAwesome size={28} style={{ marginBottom: -3 }} {...props} />;
@@ -16,6 +18,17 @@ function TabBarIcon(props: {
 export default function TabLayout() {
   const theme = useAppTheme();
   const router = useRouter();
+  
+  const { bp } = useUnifiedData();
+  const { data: readings } = bp.readings;
+  const streak = bp.streak;
+
+  // Plan notifications whenever data loads or changes
+  useEffect(() => {
+    if (readings) {
+        NotificationService.planNotifications(readings, streak);
+    }
+  }, [readings, streak]);
 
   return (
     <Tabs
@@ -80,12 +93,12 @@ export default function TabLayout() {
                 <MaterialCommunityIcons name="plus" size={48} color={theme.colors.onPrimary} />
             </View>
           ),
-          tabBarLabel: () => null, // No label
+          tabBarLabel: () => null,
         }}
         listeners={() => ({
             tabPress: (e) => {
-                e.preventDefault(); // Stop default navigation
-                router.push('/add-reading'); // Manual modal push
+                e.preventDefault();
+                router.push('/add-reading');
             }
         })}
       />

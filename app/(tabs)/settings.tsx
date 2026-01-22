@@ -187,7 +187,7 @@ export default function SettingsScreen() {
                         title="Test Notification"
                         description="Send immediate motivational reminder"
                         left={props => <List.Icon {...props} icon="bell-ring" color={paperTheme.colors.error} />}
-                        onPress={() => NotifService.sendMotivationalReminder()}
+                        onPress={() => NotifService.sendDemoMotivationalReminder()}
                         style={{ backgroundColor: paperTheme.colors.surface }}
                     />
                     <List.Item

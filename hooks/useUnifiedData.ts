@@ -44,8 +44,8 @@ export function useUnifiedData() {
             return [...local, ...uniqueHealthReadings].sort((a, b) => a.timestamp - b.timestamp);
         },
         staleTime: 1000 * 60, // Keep 60s cache in React Query too
-        refetchOnWindowFocus: false, 
-        refetchOnMount: false 
+        refetchOnWindowFocus: false,
+        refetchOnMount: false
     });
 
     const xp = useQuery({
@@ -77,7 +77,7 @@ export function useUnifiedData() {
     });
 
     const streak = calculateStreak(readings.data || []);
-    
+
     // Level calculation (Simple linear leveling: Level = floor(XP / 500) + 1)
     const currentXP = xp.data || 0;
     const level = Math.floor(currentXP / 500) + 1;
