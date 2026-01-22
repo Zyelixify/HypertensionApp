@@ -4,12 +4,15 @@ FROM mcr.microsoft.com/devcontainers/typescript-node:1-22-bookworm
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
     && apt-get -y install --no-install-recommends openjdk-17-jdk unzip
 
+# Set JAVA_HOME (Crucial for Android Builds & VS Code Java Ext)
+ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+ENV PATH="${JAVA_HOME}/bin:${PATH}"
+
 # Setup Android SDK
 ENV ANDROID_HOME=/usr/local/share/android-sdk
 ENV PATH=${PATH}:${ANDROID_HOME}/cmdline-tools/latest/bin:${ANDROID_HOME}/platform-tools
 
 # Download and install Android Command Line Tools
-# Version: commandlinetools-linux-11076708_latest.zip
 RUN mkdir -p ${ANDROID_HOME}/cmdline-tools \
     && curl -L https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -o /tmp/cmdline-tools.zip \
     && unzip -q /tmp/cmdline-tools.zip -d /tmp/cmdline-tools-temp \
@@ -17,7 +20,6 @@ RUN mkdir -p ${ANDROID_HOME}/cmdline-tools \
     && rm -rf /tmp/cmdline-tools.zip /tmp/cmdline-tools-temp
 
 # Accept licenses and install required packages
-# build-tools;34.0.0 and platforms;android-34 as requested
 RUN yes | sdkmanager --licenses \
     && sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
 
