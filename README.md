@@ -4,7 +4,7 @@
 
 A mobile application for tracking and managing hypertension (blood pressure) built with React Native and Expo. This app helps users log their blood pressure readings, visualize trends, and stay motivated with gamification features.
 
-A demo can be downloaded from the releases tab here: [Releases](https://github.com/Zyelixify/HypertensionApp/releases/tag/DEMO)
+A demo can be downloaded from the releases tab here: [Releases](https://github.com/Zyelixify/HypertensionApp/releases)
 
 ## Features
 
