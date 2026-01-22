@@ -1,10 +1,11 @@
+import { useAppTheme } from '@/hooks/useAppTheme';
 import { useUnifiedData } from '@/hooks/useUnifiedData';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { isSameDay } from 'date-fns';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { Dimensions, Pressable, StyleSheet, View } from 'react-native';
-import { Button, Text, TextInput, useTheme } from 'react-native-paper';
+import { Button, Text, TextInput } from 'react-native-paper';
 import Animated, {
     SlideInDown,
     runOnJS,
@@ -22,7 +23,7 @@ export default function ModalScreen() {
   const [newStreak, setNewStreak] = useState(0);
 
   const router = useRouter();
-  const theme = useTheme();
+  const theme = useAppTheme();
 
   const { bp } = useUnifiedData();
   const addMutation = bp.add;

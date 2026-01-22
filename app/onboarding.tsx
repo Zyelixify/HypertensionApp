@@ -1,10 +1,11 @@
+import { useAppTheme } from '@/hooks/useAppTheme';
 import { HealthService } from '@/services/HealthService';
 import { NotificationService } from '@/services/NotificationService';
 import { StorageService } from '@/services/StorageService';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Button, HelperText, Switch, Text, TextInput, useTheme } from 'react-native-paper';
+import { Button, HelperText, Switch, Text, TextInput } from 'react-native-paper';
 import Animated, {
     FadeInDown,
     FadeOutLeft,
@@ -15,7 +16,7 @@ import Animated, {
 
 export default function OnboardingScreen() {
     const router = useRouter();
-    const paperTheme = useTheme();
+    const paperTheme = useAppTheme();
 
     const [step, setStep] = useState(0); // 0: Welcome, 1: Profile, 2: Permissions
     const [name, setName] = useState('');

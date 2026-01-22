@@ -1,4 +1,5 @@
 import { useThemeContext } from '@/context/ThemeContext';
+import { useAppTheme } from '@/hooks/useAppTheme';
 import { HealthService, PermissionStatus } from '@/services/HealthService';
 import { NotificationService as NotifService } from '@/services/NotificationService';
 import { StorageService } from '@/services/StorageService';
@@ -7,11 +8,11 @@ import { addDays, setHours, startOfWeek, subWeeks } from 'date-fns';
 import { useFocusEffect, useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { Alert, Linking, ScrollView, StyleSheet, View } from 'react-native';
-import { Button, List, Switch, useTheme } from 'react-native-paper';
+import { Button, List, Switch } from 'react-native-paper';
 
 export default function SettingsScreen() {
     const { theme, toggleTheme } = useThemeContext();
-    const paperTheme = useTheme();
+    const paperTheme = useAppTheme();
     
     // Permission states
     const [healthGranted, setHealthGranted] = useState(false);

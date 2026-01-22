@@ -1,10 +1,10 @@
-import { Nord } from '@/constants/Colors';
+import { useAppTheme } from '@/hooks/useAppTheme';
 import { analyzeBP } from '@/utils/BloodPressure';
 import { addDays, endOfWeek, format, isSameDay, startOfWeek, subWeeks } from 'date-fns';
 import { useMemo, useState } from 'react';
 import { Dimensions, StyleSheet, View } from 'react-native';
 import { BarChart } from 'react-native-gifted-charts';
-import { IconButton, Text, useTheme } from 'react-native-paper';
+import { IconButton, Text } from 'react-native-paper';
 
 // Helper to get rgba string from hex
 const hexToRgba = (hex: string, opacity: number) => {
@@ -25,7 +25,7 @@ interface WeeklyTrendChartProps {
 }
 
 export function WeeklyTrendChart({ readings }: WeeklyTrendChartProps) {
-    const theme = useTheme();
+    const theme = useAppTheme();
     const [weekOffset, setWeekOffset] = useState(0);
     const screenWidth = Dimensions.get("window").width;
 
@@ -172,10 +172,10 @@ export function WeeklyTrendChart({ readings }: WeeklyTrendChartProps) {
                                         }}>
                                             <Text style={{ color: theme.colors.primary, fontSize: 12, marginBottom: 4 }}>{item.dateLabel || item.label}</Text>
                                             <Text style={{ color: theme.colors.primary, fontWeight: 'bold' }}>
-                                                Sys: <Text style={{color: Nord.chartSystolic}}>{Math.round(item.sys)}</Text>
+                                                Sys: <Text style={{color: theme.custom.chart.systolic}}>{Math.round(item.sys)}</Text>
                                             </Text>
                                             <Text style={{ color: theme.colors.primary, fontWeight: 'bold' }}>
-                                                Dia: <Text style={{color: Nord.chartDiastolic}}>{Math.round(item.dia)}</Text>
+                                                Dia: <Text style={{color: theme.custom.chart.diastolic}}>{Math.round(item.dia)}</Text>
                                             </Text>
                                         </View>
                                     </View>

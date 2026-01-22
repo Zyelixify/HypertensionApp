@@ -1,4 +1,5 @@
 import { useThemeContext } from '@/context/ThemeContext';
+import { useAppTheme } from '@/hooks/useAppTheme';
 import { useUnifiedData } from '@/hooks/useUnifiedData';
 import { StorageService, UserProfile } from '@/services/StorageService';
 import { calculateExtendedStats } from '@/utils/BloodPressure';
@@ -6,11 +7,11 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useFocusEffect } from 'expo-router';
 import React, { useCallback, useMemo, useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
-import { Avatar, ProgressBar, Text, useTheme } from 'react-native-paper';
+import { Avatar, ProgressBar, Text } from 'react-native-paper';
 
 export default function ProfileScreen() {
     const { theme } = useThemeContext();
-    const paperTheme = useTheme();
+    const paperTheme = useAppTheme();
     const { gamification, bp } = useUnifiedData();
     const { readings } = bp;
     
