@@ -1,0 +1,33 @@
+{
+    "name": "HypertensionApp",
+    "image": "mcr.microsoft.com/devcontainers/typescript-node:1-22-bookworm",
+    "features": {
+        "ghcr.io/devcontainers/features/github-cli:1": {},
+        "ghcr.io/devcontainers/features/java:1": {
+            "version": "17",
+            "jdkDistro": "ms",
+            "gradleVersion": "latest"
+        },
+        "ghcr.io/devcontainers-contrib/features/android-commandlinetools:1": {
+            "androidSearchParams": "android-34,build-tools;34.0.0,platform-tools,extras;google;m2repository,extras;android;m2repository"
+        }
+    },
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "dbaeumer.vscode-eslint",
+                "esbenp.prettier-vscode",
+                "expo.vscode-expo-tools",
+                "vscjava.vscode-java-pack"
+            ]
+        }
+    },
+    "remoteEnv": {
+        "ANDROID_HOME": "/usr/local/share/android-sdk",
+        "PATH": "${PATH}:${ANDROID_HOME}/cmdline-tools/latest/bin:${ANDROID_HOME}/platform-tools"
+    },
+    "forwardPorts": [
+        8081
+    ],
+    "postCreateCommand": "npm install"
+}

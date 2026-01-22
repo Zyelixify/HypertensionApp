@@ -1,5 +1,9 @@
 # HypertensionApp
 
+![App Banner](assets/images/banner.jpg)
+
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/Zyelixify/HypertensionApp)
+
 A mobile application for tracking and managing hypertension (blood pressure) built with React Native and Expo. This app helps users log their blood pressure readings, visualize trends, and stay motivated with gamification features.
 
 ## Features
@@ -36,7 +40,7 @@ A mobile application for tracking and managing hypertension (blood pressure) bui
 1. **Clone the repository:**
 
     ```bash
-    git clone <repository-url>
+    git clone https://github.com/Zyelixify/HypertensionApp.git
     cd HypertensionApp
     ```
 
@@ -66,6 +70,21 @@ Start the app:
 ```bash
 npx expo run:android
 ```
+
+### GitHub Codespaces
+
+You can develop this app directly in the browser.
+
+1. Click the **Open in GitHub Codespaces** badge at the top.
+2. Wait for the environment to set up (dependencies install automatically).
+3. Start the development server with the tunnel flag:
+
+    ```bash
+    npx expo start --tunnel
+    ```
+
+    > **Note**: The `--tunnel` flag is required for your physical device to connect to the cloud environment.
+4. Scan the QR code with **Expo Go** on Android.
 
 ## Project Structure
 
