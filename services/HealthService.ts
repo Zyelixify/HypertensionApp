@@ -9,161 +9,161 @@ export interface PermissionStatus {
 }
 
 export const HealthService = {
-  async requestPermissions() {
-    if (Platform.OS === 'android') {
-        try {
-            const isInitialized = await initialize();
-            if (!isInitialized) {
-                console.error('[HealthConnect] Initialization failed - Health Connect APK likely missing or checks failed.');
+    async requestPermissions() {
+        if (Platform.OS === 'android') {
+            try {
+                const isInitialized = await initialize();
+                if (!isInitialized) {
+                    console.error('[HealthConnect] Initialization failed - Health Connect APK likely missing or checks failed.');
+                    return false;
+                }
+
+                // Check if permissions are already granted to avoid unnecessary request calls
+                // which can cause crashes on some Android versions if called too early
+                const grantedPermissions = await getGrantedPermissions();
+                const hasBloodPressureRead = grantedPermissions.some(p => p.recordType === 'BloodPressure' && p.accessType === 'read');
+                const hasBloodPressureWrite = grantedPermissions.some(p => p.recordType === 'BloodPressure' && p.accessType === 'write');
+
+                if (hasBloodPressureRead && hasBloodPressureWrite) {
+                    console.log('[HealthConnect] Permissions already granted.');
+                    return true;
+                }
+
+                console.log('[HealthConnect] Requesting permissions...');
+                const granted = await requestPermission([
+                    { accessType: 'read', recordType: 'BloodPressure' },
+                    { accessType: 'write', recordType: 'BloodPressure' }
+                ]);
+                console.log('[HealthConnect] Request result:', granted);
+                return !!granted;
+            } catch (e) {
+                console.log('[HealthConnect] Error:', e);
                 return false;
             }
-
-            // Check if permissions are already granted to avoid unnecessary request calls
-            // which can cause crashes on some Android versions if called too early
-            const grantedPermissions = await getGrantedPermissions();
-            const hasBloodPressureRead = grantedPermissions.some(p => p.recordType === 'BloodPressure' && p.accessType === 'read');
-            const hasBloodPressureWrite = grantedPermissions.some(p => p.recordType === 'BloodPressure' && p.accessType === 'write');
-            
-            if (hasBloodPressureRead && hasBloodPressureWrite) {
-              console.log('[HealthConnect] Permissions already granted.');
-              return true;
-            }
-
-            console.log('[HealthConnect] Requesting permissions...');
-            const granted = await requestPermission([
-                { accessType: 'read', recordType: 'BloodPressure' },
-                { accessType: 'write', recordType: 'BloodPressure' }
-            ]);
-            console.log('[HealthConnect] Request result:', granted);
-            return !!granted;
-        } catch (e) {
-            console.log('[HealthConnect] Error:', e);
-            return false;
         }
-    }
-    return false;
-  },
+        return false;
+    },
 
-  async checkPermissions() {
-    if (Platform.OS === 'android') {
+    async checkPermissions() {
+        if (Platform.OS === 'android') {
+            try {
+                const isInitialized = await initialize();
+                if (!isInitialized) return false;
+
+                const grantedPermissions = await getGrantedPermissions();
+                return grantedPermissions.some(p => p.recordType === 'BloodPressure' && p.accessType === 'read');
+            } catch (e) {
+                return false;
+            }
+        }
+        return false;
+    },
+
+    async checkDetailedPermissions(): Promise<PermissionStatus[]> {
+        if (Platform.OS !== 'android') return [];
+
         try {
             const isInitialized = await initialize();
-            if (!isInitialized) return false;
-            
-            const grantedPermissions = await getGrantedPermissions();
-            return grantedPermissions.some(p => p.recordType === 'BloodPressure' && p.accessType === 'read');
+            if (!isInitialized) return [];
+
+            const granted = await getGrantedPermissions();
+            const required = [
+                { recordType: 'BloodPressure', accessType: 'read' },
+                { recordType: 'BloodPressure', accessType: 'write' },
+            ];
+
+            return required.map(req => ({
+                ...req,
+                granted: granted.some(g => g.recordType === req.recordType && g.accessType === req.accessType)
+            })) as PermissionStatus[];
         } catch (e) {
-            return false;
+            console.error(e);
+            return [];
         }
-    }
-    return false;
-  },
+    },
 
-  async checkDetailedPermissions(): Promise<PermissionStatus[]> {
-      if (Platform.OS !== 'android') return [];
-      
-      try {
-          const isInitialized = await initialize();
-          if (!isInitialized) return [];
+    async writeBloodPressure(systolic: number, diastolic: number, timestamp: number) {
+        if (Platform.OS !== 'android') return;
 
-          const granted = await getGrantedPermissions();
-          const required = [
-              { recordType: 'BloodPressure', accessType: 'read' },
-              { recordType: 'BloodPressure', accessType: 'write' },
-          ];
-
-          return required.map(req => ({
-              ...req,
-              granted: granted.some(g => g.recordType === req.recordType && g.accessType === req.accessType)
-          })) as PermissionStatus[];
-      } catch (e) {
-          console.error(e);
-          return [];
-      }
-  },
-
-  async writeBloodPressure(systolic: number, diastolic: number, timestamp: number) {
-      if (Platform.OS !== 'android') return;
-
-      try {
+        try {
             const isInitialized = await initialize();
             if (!isInitialized) return;
 
             // Permission check before writing
             const granted = await getGrantedPermissions();
             const hasWrite = granted.some(p => p.recordType === 'BloodPressure' && p.accessType === 'write');
-            
+
             if (!hasWrite) {
                 console.log('[HealthConnect] Write permission missing. Attempting request...');
                 await requestPermission([
                     { accessType: 'write', recordType: 'BloodPressure' }
                 ]);
-                
+
                 // If still not granted, throw or return
                 const newGranted = await getGrantedPermissions();
                 if (!newGranted.some(p => p.recordType === 'BloodPressure' && p.accessType === 'write')) {
-                     console.warn('[HealthConnect] Write permission denied by user.');
-                     return;
+                    console.warn('[HealthConnect] Write permission denied by user.');
+                    return;
                 }
             }
 
-          await insertRecords([
-              {
-                  recordType: 'BloodPressure',
-                  systolic: { value: systolic, unit: 'millimetersOfMercury' },
-                  diastolic: { value: diastolic, unit: 'millimetersOfMercury' },
-                  time: new Date(timestamp).toISOString(),
-                  bodyPosition: 0, // Unknown
-                  measurementLocation: 0 // Unknown
-              }
-          ]);
-      } catch (e) {
-          console.error('[HealthConnect] Write Error:', e);
-      }
-  },
+            await insertRecords([
+                {
+                    recordType: 'BloodPressure',
+                    systolic: { value: systolic, unit: 'millimetersOfMercury' },
+                    diastolic: { value: diastolic, unit: 'millimetersOfMercury' },
+                    time: new Date(timestamp).toISOString(),
+                    bodyPosition: 0, // Unknown
+                    measurementLocation: 0 // Unknown
+                }
+            ]);
+        } catch (e) {
+            console.error('[HealthConnect] Write Error:', e);
+        }
+    },
 
-  async getBloodPressure(): Promise<BPReading[]> {
-    const processAndroidRecords = (records: any[]): BPReading[] => {
-        return records
-            .filter(r => r.systolic?.inMillimetersOfMercury && r.diastolic?.inMillimetersOfMercury) // Filter out undefined/invalid readings
-            .map(r => ({
-                id: r.metadata?.id || Math.random().toString(),
-                systolic: r.systolic.inMillimetersOfMercury,
-                diastolic: r.diastolic.inMillimetersOfMercury,
-                timestamp: new Date(r.time).getTime(),
-                source: 'health_connect'
-            }));
-    };
+    async getBloodPressure(): Promise<BPReading[]> {
+        const processAndroidRecords = (records: any[]): BPReading[] => {
+            return records
+                .filter(r => r.systolic?.inMillimetersOfMercury && r.diastolic?.inMillimetersOfMercury) // Filter out undefined/invalid readings
+                .map(r => ({
+                    id: r.metadata?.id || Math.random().toString(),
+                    systolic: r.systolic.inMillimetersOfMercury,
+                    diastolic: r.diastolic.inMillimetersOfMercury,
+                    timestamp: new Date(r.time).getTime(),
+                    source: 'health_connect'
+                }));
+        };
 
-    if (Platform.OS === 'android') {
-        try {
-            const isInitialized = await initialize();
-            if (!isInitialized) return [];
+        if (Platform.OS === 'android') {
+            try {
+                const isInitialized = await initialize();
+                if (!isInitialized) return [];
 
-            // Check permission before reading to prevent SecurityException
-            const permissions = await getGrantedPermissions();
-            const hasBP = permissions.some(p => p.recordType === 'BloodPressure' && p.accessType === 'read');
-            if (!hasBP) {
-                console.log('[HealthConnect] Permission missing, skipping read.');
+                // Check permission before reading to prevent SecurityException
+                const permissions = await getGrantedPermissions();
+                const hasBP = permissions.some(p => p.recordType === 'BloodPressure' && p.accessType === 'read');
+                if (!hasBP) {
+                    console.log('[HealthConnect] Permission missing, skipping read.');
+                    return [];
+                }
+
+                const result = await readRecords('BloodPressure', {
+                    timeRangeFilter: {
+                        operator: 'after',
+                        startTime: new Date(new Date().getTime() - 90 * 24 * 60 * 60 * 1000).toISOString()
+                    }
+                });
+
+                console.log(`[HealthConnect] Got ${result.records.length} results`);
+
+                const records = result.records
+                return processAndroidRecords(records);
+            } catch (e) {
+                console.error('[HealthConnect] Read Error:', e);
                 return [];
             }
-
-            const result = await readRecords('BloodPressure', {
-                timeRangeFilter: {
-                    operator: 'after',
-                    startTime: new Date(new Date().getTime() - 90 * 24 * 60 * 60 * 1000).toISOString()
-                }
-            });
-            
-            console.log('[HealthConnect] Get results size:', result.records.length);
-
-            const records = result.records
-            return processAndroidRecords(records);
-        } catch (e) {
-            console.error('[HealthConnect] Read Error:', e);
-            return [];
         }
+        return [];
     }
-    return [];
-  }
 };

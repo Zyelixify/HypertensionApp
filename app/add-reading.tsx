@@ -4,7 +4,7 @@ import { NotificationService } from '@/services/NotificationService';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { isSameDay } from 'date-fns';
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Dimensions, Pressable, StyleSheet, View } from 'react-native';
 import { Button, Text, TextInput } from 'react-native-paper';
 import Animated, {
@@ -37,8 +37,18 @@ export default function ModalScreen() {
   const opacityAnim = useSharedValue(0);
   const keyboard = useAnimatedKeyboard(); 
   const insets = useSafeAreaInsets();
+  const timeoutRef = useRef<number | null>(null);
+
+  // Cleanup timer on component unmount (e.g. if user dismisses manually)
+  useEffect(() => {
+    return () => {
+        if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    };
+  }, []);
 
   const handleDismiss = () => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    
     slideAnim.value = withTiming(screenHeight, { duration: 150 }, (finished) => {
         if (finished) scheduleOnRN(router.back);
     });
@@ -88,9 +98,9 @@ export default function ModalScreen() {
       setShowSuccess(true);
       opacityAnim.value = withTiming(1, { duration: 200 });
 
-      setTimeout(() => {
+      timeoutRef.current = setTimeout(() => {
         handleDismiss();
-      }, 1500);
+      }, 3500);
   };
 
   return (

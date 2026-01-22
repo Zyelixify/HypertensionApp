@@ -1,13 +1,9 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { addDays, differenceInDays, isBefore, isSameDay, setHours, setMinutes } from 'date-fns';
 import * as Notifications from 'expo-notifications';
-import { BPReading } from './StorageService';
-
-const LAST_CONGRATS_KEY = 'last_congrats_notification_date';
+import { BPReading, StorageService } from './StorageService';
 
 Notifications.setNotificationHandler({
     handleNotification: async () => ({
-        shouldShowAlert: true,
         shouldPlaySound: true,
         shouldSetBadge: false,
         shouldShowBanner: true,
@@ -120,7 +116,7 @@ export const NotificationService = {
         if (daysSinceLast > 1) {
             await this.scheduleNotification(
                 "We miss you! 👋",
-                "It's been a few days. Tracking your BP is important for your health.",
+                "It's been a few days. Tracking your BP is important for your health. Come back and take a reading today!",
                 this.getTriggerDate(1, 9, 0) // Tomorrow 9 AM
             );
         }
@@ -128,11 +124,11 @@ export const NotificationService = {
 
     async sendImmediateStreakNotification(streak: number) {
         const now = new Date();
-        const lastCongratStr = await AsyncStorage.getItem(LAST_CONGRATS_KEY);
+        const lastCongratTimestamp = await StorageService.getLastCongratDate();
 
         // Check if we already sent one today to avoid spamming multiple readings
-        if (lastCongratStr) {
-            const lastCongrat = new Date(parseInt(lastCongratStr));
+        if (lastCongratTimestamp) {
+            const lastCongrat = new Date(lastCongratTimestamp);
             if (isSameDay(lastCongrat, now)) {
                 return;
             }
@@ -141,19 +137,19 @@ export const NotificationService = {
         await Notifications.scheduleNotificationAsync({
             content: {
                 title: "Great Job! 🎉",
-                body: `Reading recorded! You're on a ${streak} day streak.`,
+                body: `Reading recorded! You're on a ${streak} day streak! Keep it up!`,
             },
             trigger: null, // Send immediately
         });
 
-        await AsyncStorage.setItem(LAST_CONGRATS_KEY, now.getTime().toString());
+        await StorageService.setLastCongratDate(now.getTime());
     },
 
     async sendDemoMotivationalReminder() {
         await Notifications.scheduleNotificationAsync({
             content: {
                 title: "Keep it up! 💪",
-                body: "You've been tracking for 3 days in a row!",
+                body: "You've been tracking for 3 days in a row! Keep going!",
             },
             trigger: null,
         });

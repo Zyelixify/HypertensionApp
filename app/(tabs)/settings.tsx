@@ -4,10 +4,10 @@ import { HealthService, PermissionStatus } from '@/services/HealthService';
 import { NotificationService as NotifService } from '@/services/NotificationService';
 import { BPReading, StorageService } from '@/services/StorageService';
 import { useQueryClient } from '@tanstack/react-query';
-import { addDays, setHours, startOfWeek, subWeeks } from 'date-fns';
+import { addDays } from 'date-fns';
 import { useFocusEffect, useRouter } from 'expo-router';
 import React, { useState } from 'react';
-import { Alert, Linking, ScrollView, StyleSheet, View } from 'react-native';
+import { Alert, ScrollView, StyleSheet, View } from 'react-native';
 import { Button, List, Switch } from 'react-native-paper';
 
 export default function SettingsScreen() {
@@ -28,7 +28,6 @@ export default function SettingsScreen() {
         const details = await HealthService.checkDetailedPermissions();
         setHealthDetails(details);
         
-        console.log("Checking Notif perms...", NotifService);
         if (NotifService) {
             const n = await NotifService.checkPermissions();
             setNotifGranted(n);
@@ -50,52 +49,55 @@ export default function SettingsScreen() {
         await NotifService.requestPermissions();
         checkPerms();
     };
-    
-    const openSettings = () => {
-        Linking.openSettings()
-    }
 
     const generateMockData = async () => {
         try {
-            const now = new Date();
-            const startStr = startOfWeek(subWeeks(now, 1), { weekStartsOn: 0 });
-            // 2 weeks of data
-            const daysToGenerate = 14; 
-            
+            const TARGET_READINGS = 60 + Math.floor(Math.random() * 40); // Between 60 and 100 readings
             const newReadings: Omit<BPReading, 'id'>[] = [];
             
-            for (let i = 0; i < daysToGenerate; i++) {
-                const day = addDays(startStr, i);
-                if (day > now) continue;
-
-
-                // Number of readings per day: 1-2
-                const numReadings = Math.round(Math.random()) + 1; 
-
-                for (let j = 0; j < numReadings; j++) {
-                    const hour = 8 + Math.floor(Math.random() * 12);
-                    const readingTime = setHours(day, hour).getTime();
-                    
-                    // Random BP: skewed towards normal (90-125) but with some elevated (125-150)
-                    const isNormal = Math.random() > 0.3; // 70% chance of normal-ish range
-                    
-                    let sys, dia;
-                    if (isNormal) {
-                        sys = Math.floor(Math.random() * (125 - 95) + 95);
-                        dia = Math.floor(Math.random() * (82 - 60) + 60);
-                    } else {
-                         sys = Math.floor(Math.random() * (155 - 120) + 120);
-                         dia = Math.floor(Math.random() * (95 - 75) + 75);
+            // Start from yesterday to go backwards
+            let currentDate = addDays(new Date(), -1);
+            
+            while (newReadings.length < TARGET_READINGS) {
+                // 5% chance to skip this day entirely
+                if (Math.random() > 0.05) {
+                    const rand = Math.random();
+                    let sys = 0, dia = 0;
+                    if (rand < 0.50) { // 50% Normal
+                        sys = Math.floor(Math.random() * (120 - 100) + 100);
+                        dia = Math.floor(Math.random() * (80 - 65) + 65);
+                    } else if (rand < 0.65) { // 15% Slightly Elevated
+                        sys = Math.floor(Math.random() * (140 - 120) + 120);
+                        dia = Math.floor(Math.random() * (90 - 80) + 80);
+                    } else if (rand < 0.75) { // 10% Elevated
+                        sys = Math.floor(Math.random() * (165 - 140) + 140);
+                        dia = Math.floor(Math.random() * (110 - 90) + 90);
+                    } else if (rand < 0.90) { // 15% Slightly Lower (Low Normal)
+                        sys = Math.floor(Math.random() * (100 - 90) + 90);
+                        dia = Math.floor(Math.random() * (65 - 60) + 60);
+                    } else { // 10% Lower (Hypotension)
+                        sys = Math.floor(Math.random() * (90 - 80) + 80);
+                        dia = Math.floor(Math.random() * (60 - 50) + 50);
                     }
+
+                    // Random time between 8am and 10pm
+                    const hour = 8 + Math.floor(Math.random() * 14);
+                    const minute = Math.floor(Math.random() * 60);
+                    
+                    const readingTime = new Date(currentDate);
+                    readingTime.setHours(hour, minute, 0, 0);
                     
                     newReadings.push({
                         systolic: sys,
                         diastolic: dia,
-                        timestamp: readingTime,
+                        timestamp: readingTime.getTime(),
                         source: 'manual',
-                        note: 'Debug Data'
+                        note: 'Mock Data'
                     });
                 }
+                
+                // Move backwards one day
+                currentDate = addDays(currentDate, -1);
             }
             
             await StorageService.bulkAddReadings(newReadings);
@@ -106,7 +108,7 @@ export default function SettingsScreen() {
             queryClient.invalidateQueries({ queryKey: ['bp', 'readings'] });
             queryClient.invalidateQueries({ queryKey: ['user', 'xp'] });
 
-            Alert.alert("Debug", `Added ${newReadings.length} mock readings and ${newReadings.length * 50} XP.`);
+            Alert.alert("Debug", `Generated ${newReadings.length} mock readings.`);
         } catch (e) {
             Alert.alert("Error", "Failed to generate data");
             console.error(e);
@@ -178,7 +180,7 @@ export default function SettingsScreen() {
                     <List.Subheader style={{ color: paperTheme.colors.error, fontWeight: 'bold' }}>DEBUG</List.Subheader>
                     <List.Item
                         title="Populate Mock Data"
-                        description="Random data for last 2 weeks"
+                        description="Generate 60-100 random readings"
                         left={props => <List.Icon {...props} icon="database-plus" color={paperTheme.colors.error} />}
                         onPress={generateMockData}
                         style={{ backgroundColor: paperTheme.colors.surface }}
@@ -202,6 +204,7 @@ export default function SettingsScreen() {
                     />
                     <List.Item
                         title="Clear All Data"
+                        description="Remove all stored readings and reset progress"
                         left={props => <List.Icon {...props} icon="database-remove" color={paperTheme.colors.error} />}
                         onPress={async () => {
                             await StorageService.clearReadings();

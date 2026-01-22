@@ -15,7 +15,7 @@ export function useUnifiedData() {
             // 2. Determine if we should sync with Health Connect
             const lastSync = await StorageService.getLastSyncTime();
             const now = Date.now();
-            const shouldSync = (now - lastSync) > 5000;
+            const shouldSync = (now - lastSync) > 1000 * 60; // 1 minute debounce
 
             let healthReadings: BPReading[] = [];
 
@@ -30,7 +30,7 @@ export function useUnifiedData() {
                     healthReadings = await StorageService.getCachedHealthReadings();
                 }
             } else {
-                console.log("Skipping Health Sync (Debounced 5s)");
+                console.log("Skipping Health Sync (Debounced 1m)");
                 healthReadings = await StorageService.getCachedHealthReadings();
             }
 

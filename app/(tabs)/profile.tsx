@@ -1,4 +1,3 @@
-import { useThemeContext } from '@/context/ThemeContext';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import { useUnifiedData } from '@/hooks/useUnifiedData';
 import { StorageService, UserProfile } from '@/services/StorageService';
@@ -10,7 +9,6 @@ import { ScrollView, StyleSheet, View } from 'react-native';
 import { Avatar, ProgressBar, Text } from 'react-native-paper';
 
 export default function ProfileScreen() {
-    const { theme } = useThemeContext();
     const paperTheme = useAppTheme();
     const { gamification, bp } = useUnifiedData();
     const { readings } = bp;
@@ -29,8 +27,8 @@ export default function ProfileScreen() {
     return (
         <ScrollView style={[styles.container, { backgroundColor: paperTheme.colors.background }]}>
 
-            <View style={{ alignItems: 'center', paddingVertical: 32, backgroundColor: paperTheme.colors.surface, borderBottomWidth: 1, borderBottomColor: paperTheme.colors.outlineVariant }}>
-                <View style={{ height: 16 }} />
+            <View style={{ alignItems: 'center', paddingVertical: 16, backgroundColor: paperTheme.colors.surface, borderBottomWidth: 1, borderBottomColor: paperTheme.colors.outlineVariant }}>
+                <View style={{ height: 32 }} />
 
                 <Avatar.Text 
                     size={100} 
