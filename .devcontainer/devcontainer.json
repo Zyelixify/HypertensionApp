@@ -1,16 +1,10 @@
 {
     "name": "HypertensionApp",
-    "image": "mcr.microsoft.com/devcontainers/typescript-node:1-22-bookworm",
+    "build": {
+        "dockerfile": "Dockerfile"
+    },
     "features": {
-        "ghcr.io/devcontainers/features/github-cli:1": {},
-        "ghcr.io/devcontainers/features/java:1": {
-            "version": "17",
-            "jdkDistro": "ms",
-            "gradleVersion": "latest"
-        },
-        "ghcr.io/devcontainers-contrib/features/android-commandlinetools:1": {
-            "androidSearchParams": "android-34,build-tools;34.0.0,platform-tools,extras;google;m2repository,extras;android;m2repository"
-        }
+        "ghcr.io/devcontainers/features/github-cli:1": {}
     },
     "customizations": {
         "vscode": {
@@ -29,5 +23,6 @@
     "forwardPorts": [
         8081
     ],
-    "postCreateCommand": "npm install"
+    "postCreateCommand": "npm install && npx expo install @expo/ngrok && npx expo prebuild",
+    "postAttachCommand": "npx expo start --tunnel"
 }
