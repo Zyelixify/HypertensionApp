@@ -8,13 +8,13 @@ import { Dimensions, Pressable, StyleSheet, View } from 'react-native';
 import { Button, Text, TextInput } from 'react-native-paper';
 import Animated, {
     SlideInDown,
-    runOnJS,
     useAnimatedKeyboard,
     useAnimatedStyle,
     useSharedValue,
     withTiming
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { scheduleOnRN } from 'react-native-worklets';
 
 export default function ModalScreen() {
   const [systolic, setSystolic] = useState('');
@@ -39,7 +39,7 @@ export default function ModalScreen() {
 
   const handleDismiss = () => {
     slideAnim.value = withTiming(screenHeight, { duration: 150 }, (finished) => {
-        if (finished) runOnJS(router.back)();
+        if (finished) scheduleOnRN(router.back);
     });
   };
   
@@ -94,7 +94,7 @@ export default function ModalScreen() {
                         backgroundColor: theme.colors.surface,
                         borderColor: theme.colors.outlineVariant,
                         borderWidth: 1,
-                        borderBottomWidth: 0, // Open at bottom
+                        borderBottomWidth: 0,
                     },
                     animatedSheetStyle
                 ]}

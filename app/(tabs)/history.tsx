@@ -1,16 +1,17 @@
 import { Nord } from '@/constants/Colors';
+import { useAppTheme } from '@/hooks/useAppTheme';
 import { useUnifiedData } from '@/hooks/useUnifiedData';
 import { BPReading } from '@/services/StorageService';
 import { analyzeBP } from '@/utils/BloodPressure';
 import { useFocusEffect } from 'expo-router';
 import { useCallback } from 'react';
 import { FlatList, RefreshControl, StyleSheet, View } from 'react-native';
-import { Text, useTheme } from 'react-native-paper';
+import { Text } from 'react-native-paper';
 
 export default function HistoryScreen() {
   const { bp } = useUnifiedData();
   const { data: readings = [], isLoading, refetch } = bp.readings;
-  const theme = useTheme();
+  const theme = useAppTheme();
 
   // Sort descending for history list
   const sortedReadings = [...readings].sort((a, b) => b.timestamp - a.timestamp);

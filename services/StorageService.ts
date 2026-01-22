@@ -101,7 +101,7 @@ export const StorageService = {
     } catch { return []; }
   },
 
-  async setCachedHealthReadings(readings: any[]) {
+  async setCachedHealthReadings(readings: BPReading[]) {
       await AsyncStorage.setItem(HEALTH_CACHE_KEY, JSON.stringify(readings));
   }
 };

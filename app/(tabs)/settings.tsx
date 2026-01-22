@@ -2,7 +2,7 @@ import { useThemeContext } from '@/context/ThemeContext';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import { HealthService, PermissionStatus } from '@/services/HealthService';
 import { NotificationService as NotifService } from '@/services/NotificationService';
-import { StorageService } from '@/services/StorageService';
+import { BPReading, StorageService } from '@/services/StorageService';
 import { useQueryClient } from '@tanstack/react-query';
 import { addDays, setHours, startOfWeek, subWeeks } from 'date-fns';
 import { useFocusEffect, useRouter } from 'expo-router';
@@ -62,7 +62,7 @@ export default function SettingsScreen() {
             // 2 weeks of data
             const daysToGenerate = 14; 
             
-            const newReadings: any[] = [];
+            const newReadings: Omit<BPReading, 'id'>[] = [];
             
             for (let i = 0; i < daysToGenerate; i++) {
                 const day = addDays(startStr, i);

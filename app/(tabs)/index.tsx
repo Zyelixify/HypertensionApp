@@ -1,18 +1,19 @@
 import { DailyTipCard } from '@/components/dashboard/DailyTipCard';
 import { LatestReadingCard } from '@/components/dashboard/LatestReadingCard';
 import { WeeklyTrendChart } from '@/components/dashboard/WeeklyTrendChart';
+import { useAppTheme } from '@/hooks/useAppTheme';
 import { useUnifiedData } from '@/hooks/useUnifiedData';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useFocusEffect } from 'expo-router';
 import { useCallback } from 'react';
 import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
-import { ProgressBar, Text, useTheme } from 'react-native-paper';
+import { ProgressBar, Text } from 'react-native-paper';
 
 export default function DashboardScreen() {
   const { bp, gamification } = useUnifiedData();
   const { data: readings = [], isLoading, refetch } = bp.readings;
   const { streak } = bp;
-  const theme = useTheme();
+  const theme = useAppTheme();
   
   useFocusEffect(
       useCallback(() => {

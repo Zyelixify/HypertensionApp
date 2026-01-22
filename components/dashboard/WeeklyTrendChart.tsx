@@ -6,22 +6,19 @@ import { Dimensions, StyleSheet, View } from 'react-native';
 import { BarChart } from 'react-native-gifted-charts';
 import { IconButton, Text } from 'react-native-paper';
 
-// Helper to get rgba string from hex
-const hexToRgba = (hex: string, opacity: number) => {
-    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-    if (!result) return `rgba(0,0,0,${opacity})`;
-    const r = parseInt(result[1], 16);
-    const g = parseInt(result[2], 16);
-    const b = parseInt(result[3], 16);
-    return `rgba(${r}, ${g}, ${b}, ${opacity})`;
-};
-
 interface WeeklyTrendChartProps {
     readings: {
         timestamp: number;
         systolic: number;
         diastolic: number;
     }[];
+}
+
+interface ChartPointerItem {
+    sys?: number;
+    dia?: number;
+    dateLabel?: string;
+    label?: string;
 }
 
 export function WeeklyTrendChart({ readings }: WeeklyTrendChartProps) {
@@ -59,22 +56,17 @@ export function WeeklyTrendChart({ readings }: WeeklyTrendChartProps) {
         const minDia = Math.min(...validItems.map(d => d.dia as number));
 
         // Determine Min Y (Axis Offset)
-        // Keep it simple: Round down minDia to nearest 20, then subtract 20 for breathing room.
-        // Ensure we don't go below 0.
         let yAxisOffset = Math.floor((minDia - 20) / 20) * 20;
         if (yAxisOffset < 0) yAxisOffset = 0;
         
         // Calculate Scale
-        // We want 4 sections.
-        // Target Range = maxSys - yAxisOffset.
         const targetRange = (maxSys + 10) - yAxisOffset; 
         
         // Find a step value. Round to nearest 5.
         const rawStep = targetRange / 4;
         const stepValue = Math.ceil(rawStep / 5) * 5;
         
-        // MaxValue for GiftedCharts must equal stepValue * noOfSections
-        // This effectively represents the RANGE of the chart, not the absolute top value (since we have an offset)
+        // Calculate range of chart
         const calculatedMaxRange = stepValue * 4;
 
         const barData = rawData.map((d) => {
@@ -88,7 +80,6 @@ export function WeeklyTrendChart({ readings }: WeeklyTrendChartProps) {
 
             const range = d.sys - d.dia;
             
-            // For Gifted Charts with stackedBar and yAxisOffset, 
             // we pass ABSOLUTE values. The library subtracts the offset.
             const bottomSpacing = d.dia;
             const analysis = analyzeBP(d.sys, d.dia);
@@ -158,8 +149,8 @@ export function WeeklyTrendChart({ readings }: WeeklyTrendChartProps) {
                             pointerLabelWidth: 100,
                             pointerLabelHeight: 90,
                             autoAdjustPointerLabelPosition: true,
-                            pointerComponent: (item: any) => {
-                                if (!item || !item.sys) return null;
+                            pointerComponent: (item: ChartPointerItem) => {
+                                if (!item || !item.sys || !item.dia) return null;
                                 
                                 return (
                                     <View style={{ height: 90, width: 100, justifyContent: 'center', marginTop: -30, marginLeft: -40 }}>

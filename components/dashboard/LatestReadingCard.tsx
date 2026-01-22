@@ -1,6 +1,7 @@
+import { useAppTheme } from '@/hooks/useAppTheme';
 import { analyzeBP } from '@/utils/BloodPressure';
 import { StyleSheet, View } from 'react-native';
-import { Text, useTheme } from 'react-native-paper';
+import { Text } from 'react-native-paper';
 
 interface LatestReadingCardProps {
     latest: {
@@ -11,7 +12,7 @@ interface LatestReadingCardProps {
 }
 
 export function LatestReadingCard({ latest }: LatestReadingCardProps) {
-    const theme = useTheme();
+    const theme = useAppTheme();
 
     return (
         <View style={[styles.card, { backgroundColor: theme.colors.surface, borderColor: theme.colors.outlineVariant }]}>
@@ -60,6 +61,6 @@ const styles = StyleSheet.create({
     card: {
         marginBottom: 16,
         borderRadius: 16,
-        borderWidth: 1, // Subtle border
+        borderWidth: 1,
     },
 });

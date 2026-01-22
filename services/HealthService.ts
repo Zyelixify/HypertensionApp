@@ -1,5 +1,6 @@
 import { Platform } from 'react-native';
 import { getGrantedPermissions, initialize, insertRecords, readRecords, requestPermission } from 'react-native-health-connect';
+import { BPReading } from './StorageService';
 
 export interface PermissionStatus {
     recordType: string;
@@ -112,8 +113,8 @@ export const HealthService = {
                   systolic: { value: systolic, unit: 'millimetersOfMercury' },
                   diastolic: { value: diastolic, unit: 'millimetersOfMercury' },
                   time: new Date(timestamp).toISOString(),
-                  bodyPosition: 2, // Sitting, placeholder
-                  measurementLocation: 3 // Upper left arm, placeholder
+                  bodyPosition: 0, // Unknown
+                  measurementLocation: 0 // Unknown
               }
           ]);
       } catch (e) {
@@ -121,9 +122,8 @@ export const HealthService = {
       }
   },
 
-  async getBloodPressure() {
-    // Shared formatting helper
-    const processAndroidRecords = (records: any[]) => {
+  async getBloodPressure(): Promise<BPReading[]> {
+    const processAndroidRecords = (records: any[]): BPReading[] => {
         return records
             .filter(r => r.systolic?.inMillimetersOfMercury && r.diastolic?.inMillimetersOfMercury) // Filter out undefined/invalid readings
             .map(r => ({

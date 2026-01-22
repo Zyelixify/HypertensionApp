@@ -1,12 +1,12 @@
 import { HealthService } from '@/services/HealthService';
-import { StorageService } from '@/services/StorageService';
+import { BPReading, StorageService } from '@/services/StorageService';
 import { calculateStreak } from '@/utils/BloodPressure';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 export function useUnifiedData() {
     const queryClient = useQueryClient();
 
-    const readings = useQuery({
+    const readings = useQuery<BPReading[]>({
         queryKey: ['bp', 'readings'],
         queryFn: async () => {
             // 1. Always get local data
@@ -17,7 +17,7 @@ export function useUnifiedData() {
             const now = Date.now();
             const shouldSync = (now - lastSync) > 5000;
 
-            let healthReadings: any[] = [];
+            let healthReadings: BPReading[] = [];
 
             if (shouldSync) {
                 try {
@@ -35,14 +35,13 @@ export function useUnifiedData() {
             }
 
             // Deduplicate: If we have a local reading with roughly the same timestamp (+- 1000ms), prefer local
-            const localTimestamps = new Set(local.map((l: any) => l.timestamp));
-            const uniqueHealthReadings = healthReadings.filter((h: any) => {
+            const uniqueHealthReadings = healthReadings.filter((h) => {
                 // Check if any local reading is within 1s of this health reading
-                const isDuplicate = local.some((l: any) => Math.abs(l.timestamp - h.timestamp) < 1000);
+                const isDuplicate = local.some((l) => Math.abs(l.timestamp - h.timestamp) < 1000);
                 return !isDuplicate;
             });
 
-            return [...local, ...uniqueHealthReadings].sort((a: any, b: any) => a.timestamp - b.timestamp);
+            return [...local, ...uniqueHealthReadings].sort((a, b) => a.timestamp - b.timestamp);
         },
         staleTime: 1000 * 60, // Keep 60s cache in React Query too
         refetchOnWindowFocus: false, 

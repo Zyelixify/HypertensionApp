@@ -1,8 +1,9 @@
+import { useAppTheme } from '@/hooks/useAppTheme';
 import { StyleSheet, View } from 'react-native';
-import { Avatar, Text, useTheme } from 'react-native-paper';
+import { Avatar, Text } from 'react-native-paper';
 
 export function DailyTipCard() {
-    const theme = useTheme();
+    const theme = useAppTheme();
 
     return (
         <View style={[styles.card, { backgroundColor: theme.colors.surface, borderColor: theme.colors.outlineVariant }]}>
@@ -28,6 +29,6 @@ const styles = StyleSheet.create({
     card: {
         marginBottom: 16,
         borderRadius: 16,
-        borderWidth: 1, // Subtle border
+        borderWidth: 1,
     },
 });
