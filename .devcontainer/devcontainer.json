@@ -23,6 +23,5 @@
     "forwardPorts": [
         8081
     ],
-    "postCreateCommand": "npm install && npx expo install @expo/ngrok && npx expo prebuild",
-    "postAttachCommand": "npx expo start --tunnel"
+    "postCreateCommand": "npm install && npx expo install @expo/ngrok && npx expo prebuild"
 }

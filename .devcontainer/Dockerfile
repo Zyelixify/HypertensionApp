@@ -20,3 +20,6 @@ RUN mkdir -p ${ANDROID_HOME}/cmdline-tools \
 # build-tools;34.0.0 and platforms;android-34 as requested
 RUN yes | sdkmanager --licenses \
     && sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
+
+# Fix permissions for the node user
+RUN chown -R node:node ${ANDROID_HOME}
