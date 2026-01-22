@@ -1,4 +1,3 @@
-import { Nord, nordDarkTheme, nordLightTheme } from '@/constants/Colors';
 import { useThemeContext } from '@/context/ThemeContext';
 import { HealthService, PermissionStatus } from '@/services/HealthService';
 import { NotificationService as NotifService } from '@/services/NotificationService';
@@ -8,11 +7,11 @@ import { addDays, setHours, startOfWeek, subWeeks } from 'date-fns';
 import { useFocusEffect, useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { Alert, Linking, ScrollView, StyleSheet, View } from 'react-native';
-import { Button, List, Switch } from 'react-native-paper';
+import { Button, List, Switch, useTheme } from 'react-native-paper';
 
 export default function SettingsScreen() {
     const { theme, toggleTheme } = useThemeContext();
-    const paperTheme = theme === 'dark' ? nordDarkTheme : nordLightTheme;
+    const paperTheme = useTheme();
     
     // Permission states
     const [healthGranted, setHealthGranted] = useState(false);
@@ -124,13 +123,13 @@ export default function SettingsScreen() {
                     title="Dark Theme"
                     titleStyle={{ color: paperTheme.colors.onSurface }}
                     left={props => <List.Icon {...props} icon="theme-light-dark" color={paperTheme.colors.onSurface} />}
-                    right={() => <Switch value={theme === 'dark'} onValueChange={toggleTheme} color={Nord.frost3} />}
+                    right={() => <Switch value={theme === 'dark'} onValueChange={toggleTheme} color={paperTheme.colors.primary} />}
                     style={{ backgroundColor: paperTheme.colors.surface }}
                 />
             </List.Section>
             
             <List.Section>
-                <List.Subheader style={{ color: paperTheme.colors.secondary, fontWeight: 'bold' }}>PERMISSIONS</List.Subheader>
+                <List.Subheader style={{ color: paperTheme.colors.primary, fontWeight: 'bold' }}>PERMISSIONS</List.Subheader>
                 
                 <List.Accordion
                     title="Health Connect"
@@ -147,8 +146,8 @@ export default function SettingsScreen() {
                             key={index}
                             title={`${perm.recordType}`}
                             description={perm.accessType.toUpperCase()}
-                            descriptionStyle={{ fontSize: 10, color: paperTheme.colors.secondary }}
-                            right={props => <List.Icon {...props} icon={perm.granted ? "check-circle" : "alert-circle"} color={perm.granted ? Nord.auroraGreen : Nord.auroraRed} />}
+                            descriptionStyle={{ fontSize: 10, color: paperTheme.colors.onSurfaceVariant }}
+                            right={props => <List.Icon {...props} icon={perm.granted ? "check-circle" : "alert-circle"} color={perm.granted ? paperTheme.custom.success : paperTheme.colors.error} />}
                             style={{ backgroundColor: paperTheme.colors.surface, paddingLeft: 16 }}
                         />
                     ))}
@@ -166,7 +165,7 @@ export default function SettingsScreen() {
                     descriptionStyle={{ color: paperTheme.colors.onSurfaceVariant }}
                     left={props => <List.Icon {...props} icon="bell" color={paperTheme.colors.onSurface} />}
                     right={props => notifGranted 
-                        ? <List.Icon {...props} icon="check-circle" color={Nord.auroraGreen} />
+                        ? <List.Icon {...props} icon="check-circle" color={paperTheme.custom.success} />
                         : <Button onPress={requestNotif} mode="contained-tonal">Grant</Button>
                     }
                     style={{ backgroundColor: paperTheme.colors.surface }}

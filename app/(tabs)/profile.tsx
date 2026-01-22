@@ -1,4 +1,3 @@
-import { Nord, nordDarkTheme, nordLightTheme } from '@/constants/Colors';
 import { useThemeContext } from '@/context/ThemeContext';
 import { useUnifiedData } from '@/hooks/useUnifiedData';
 import { StorageService, UserProfile } from '@/services/StorageService';
@@ -7,11 +6,11 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useFocusEffect } from 'expo-router';
 import React, { useCallback, useMemo, useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
-import { Avatar, Card, ProgressBar, Text } from 'react-native-paper';
+import { Avatar, ProgressBar, Text, useTheme } from 'react-native-paper';
 
 export default function ProfileScreen() {
     const { theme } = useThemeContext();
-    const paperTheme = theme === 'dark' ? nordDarkTheme : nordLightTheme;
+    const paperTheme = useTheme();
     const { gamification, bp } = useUnifiedData();
     const { readings } = bp;
     
@@ -29,7 +28,7 @@ export default function ProfileScreen() {
     return (
         <ScrollView style={[styles.container, { backgroundColor: paperTheme.colors.background }]}>
 
-            <View style={{ alignItems: 'center', paddingVertical: 32, backgroundColor: paperTheme.colors.surface }}>
+            <View style={{ alignItems: 'center', paddingVertical: 32, backgroundColor: paperTheme.colors.surface, borderBottomWidth: 1, borderBottomColor: paperTheme.colors.outlineVariant }}>
                 <View style={{ height: 16 }} />
 
                 <Avatar.Text 
@@ -37,7 +36,7 @@ export default function ProfileScreen() {
                     label={profile?.name?.substring(0, 2).toUpperCase() || "ME"} 
                     style={{ backgroundColor: paperTheme.colors.primary }} 
                 />
-                <Text variant="headlineMedium" style={{ fontWeight: 'bold', marginTop: 16 }}>
+                <Text variant="headlineMedium" style={{ fontWeight: 'bold', marginTop: 16, color: paperTheme.colors.onSurface }}>
                     {profile?.name || "User"}
                 </Text>
                 <Text variant="bodyLarge" style={{ color: paperTheme.colors.secondary }}>
@@ -46,8 +45,8 @@ export default function ProfileScreen() {
             </View>
 
             <View style={{ padding: 16, gap: 16 }}>
-                <Card style={{ backgroundColor: paperTheme.colors.elevation.level2 }}>
-                    <Card.Content>
+                <View style={[styles.card, { backgroundColor: paperTheme.colors.surface, borderColor: paperTheme.colors.outlineVariant }]}>
+                    <View style={{ padding: 16 }}>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
                             <Text variant="titleMedium" style={{ fontWeight: 'bold' }}>Current Level</Text>
                             <View style={{ flexDirection: 'row', alignItems: 'flex-end'}}>
@@ -59,7 +58,7 @@ export default function ProfileScreen() {
                         
                         <ProgressBar 
                             progress={gamification.progress} 
-                            color={Nord.auroraGreen} 
+                            color={paperTheme.custom.success} 
                             style={{ height: 12, borderRadius: 6, backgroundColor: paperTheme.colors.surfaceVariant }} 
                         />
                         
@@ -71,15 +70,15 @@ export default function ProfileScreen() {
                                 {gamification.nextLevelXP} XP (Next Lvl)
                             </Text>
                         </View>
-                    </Card.Content>
-                </Card>
+                    </View>
+                </View>
 
                 {/* Stats Grid */}
                 <View style={{ flexDirection: 'row', gap: 16 }}>
                     {/* Streak Card */}
-                    <Card style={{ flex: 1, backgroundColor: paperTheme.colors.elevation.level1 }}>
-                        <Card.Content style={{ alignItems: 'center', paddingVertical: 16 }}>
-                            <MaterialCommunityIcons name="fire" size={32} color={Nord.auroraRed} />
+                    <View style={[styles.card, { flex: 1, backgroundColor: paperTheme.colors.surface, borderColor: paperTheme.colors.outlineVariant }]}>
+                        <View style={{ alignItems: 'center', paddingVertical: 16, paddingHorizontal: 16 }}>
+                            <MaterialCommunityIcons name="fire" size={32} color={paperTheme.colors.error} />
                             <Text variant="titleMedium" style={{ marginTop: 8, fontWeight: 'bold' }}>Streak</Text>
                             
                             <View style={{ alignItems: 'center', marginTop: 12 }}>
@@ -97,13 +96,13 @@ export default function ProfileScreen() {
                                 </Text>
                                 <Text variant="bodySmall" style={{ color: paperTheme.colors.secondary }}>Best</Text>
                             </View>
-                        </Card.Content>
-                    </Card>
+                        </View>
+                    </View>
 
                     {/* Healthy Streak Card */}
-                    <Card style={{ flex: 1, backgroundColor: paperTheme.colors.elevation.level1 }}>
-                        <Card.Content style={{ alignItems: 'center', paddingVertical: 16 }}>
-                           <MaterialCommunityIcons name="heart-pulse" size={32} color={Nord.auroraGreen} />
+                    <View style={[styles.card, { flex: 1, backgroundColor: paperTheme.colors.surface, borderColor: paperTheme.colors.outlineVariant }]}>
+                        <View style={{ alignItems: 'center', paddingVertical: 16, paddingHorizontal: 16 }}>
+                           <MaterialCommunityIcons name="heart-pulse" size={32} color={paperTheme.custom.success} />
                             <Text variant="titleMedium" style={{ marginTop: 8, fontWeight: 'bold' }}>Healthy Streak</Text>
                             
                             <View style={{ alignItems: 'center', marginTop: 12 }}>
@@ -121,19 +120,22 @@ export default function ProfileScreen() {
                                 </Text>
                                 <Text variant="bodySmall" style={{ color: paperTheme.colors.secondary }}>Best</Text>
                             </View>
-                        </Card.Content>
-                    </Card>
+                        </View>
+                    </View>
                 </View>
 
                  {/* Badges Placeholder (Future) */}
-                 <Card style={{ backgroundColor: paperTheme.colors.elevation.level1, marginTop: 0 }}>
-                     <Card.Title title="Achievements" left={(props) => <MaterialCommunityIcons {...props} color={Nord.auroraYellow} name="trophy" />} />
-                     <Card.Content>
-                         <Text variant="bodyMedium" style={{ color: paperTheme.colors.secondary, fontStyle: 'italic' }}>
+                 <View style={[styles.card, { backgroundColor: paperTheme.colors.surface, borderColor: paperTheme.colors.outlineVariant }]}>
+                     <View style={{ padding: 16 }}>
+                        <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
+                             <MaterialCommunityIcons size={24} color={paperTheme.custom.warning} name="trophy" style={{marginRight: 16}} />
+                             <Text variant="titleMedium">Achievements</Text>
+                        </View>
+                         <Text variant="bodyMedium" style={{ color: paperTheme.colors.secondary, fontStyle: 'italic', paddingLeft: 40 }}>
                              Coming soon...
                          </Text>
-                     </Card.Content>
-                 </Card>
+                     </View>
+                 </View>
 
             </View>
         </ScrollView>
@@ -144,4 +146,9 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
     },
+    card: {
+        marginBottom: 8,
+        borderRadius: 16,
+        borderWidth: 1,
+    }
 });

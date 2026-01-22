@@ -1,12 +1,10 @@
-import { Nord, nordDarkTheme, nordLightTheme } from '@/constants/Colors';
-import { useThemeContext } from '@/context/ThemeContext';
 import { HealthService } from '@/services/HealthService';
 import { NotificationService } from '@/services/NotificationService';
 import { StorageService } from '@/services/StorageService';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Button, HelperText, Switch, Text, TextInput } from 'react-native-paper';
+import { Button, HelperText, Switch, Text, TextInput, useTheme } from 'react-native-paper';
 import Animated, {
     FadeInDown,
     FadeOutLeft,
@@ -17,8 +15,7 @@ import Animated, {
 
 export default function OnboardingScreen() {
     const router = useRouter();
-    const { theme } = useThemeContext();
-    const paperTheme = theme === 'dark' ? nordDarkTheme : nordLightTheme;
+    const paperTheme = useTheme();
 
     const [step, setStep] = useState(0); // 0: Welcome, 1: Profile, 2: Permissions
     const [name, setName] = useState('');
@@ -110,20 +107,20 @@ export default function OnboardingScreen() {
                 To work best, we need a few things. You decide.
             </Text>
 
-            <View style={styles.permRow}>
+            <View style={[styles.permRow, { backgroundColor: paperTheme.colors.surface }]}>
                 <View style={{ flex: 1 }}>
                     <Text variant="titleMedium" style={{ fontWeight: 'bold' }}>Health Connect</Text>
                     <Text variant="bodySmall" style={{ color: paperTheme.colors.secondary }}>Sync blood pressure readings automatically.</Text>
                 </View>
-                <Switch value={healthPerm} onValueChange={setHealthPerm} color={Nord.auroraGreen} />
+                <Switch value={healthPerm} onValueChange={setHealthPerm} color={paperTheme.custom.success} />
             </View>
 
-            <View style={styles.permRow}>
+            <View style={[styles.permRow, { backgroundColor: paperTheme.colors.surface }]}>
                 <View style={{ flex: 1 }}>
                     <Text variant="titleMedium" style={{ fontWeight: 'bold' }}>Notifications</Text>
-                    <Text variant="bodySmall" style={{ color: paperTheme.colors.secondary }}>Reminders to log your BP.</Text>
+                    <Text variant="bodySmall" style={{ color: paperTheme.colors.secondary }}>Reminders to log your blood pressure readings.</Text>
                 </View>
-                <Switch value={notifPerm} onValueChange={setNotifPerm} color={Nord.auroraGreen} />
+                <Switch value={notifPerm} onValueChange={setNotifPerm} color={paperTheme.custom.success} />
             </View>
         </Animated.View>
     );
@@ -138,8 +135,8 @@ export default function OnboardingScreen() {
             <View style={{ height: 60 }} />
 
             {/* Progress Bar */}
-            <View style={{ height: 4, backgroundColor: paperTheme.colors.elevation.level2, marginHorizontal: 24, borderRadius: 2, overflow: 'hidden' }}>
-                 <Animated.View style={[{ height: '100%', backgroundColor: Nord.auroraGreen }, progressStyle]} />
+            <View style={{ height: 4, backgroundColor: paperTheme.colors.surfaceVariant, marginHorizontal: 24, borderRadius: 2, overflow: 'hidden' }}>
+                 <Animated.View style={[{ height: '100%', backgroundColor: paperTheme.custom.success }, progressStyle]} />
             </View>
 
             <View style={styles.content}>

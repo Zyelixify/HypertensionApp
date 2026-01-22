@@ -1,43 +1,142 @@
 import { MD3DarkTheme, MD3LightTheme } from 'react-native-paper';
 
-// Nord Theme Palette
+// Nord Theme Palette - High Contrast Modified
 export const Nord = {
-  polarNight0: '#2E3440',
-  polarNight1: '#3B4252',
-  polarNight2: '#434C5E',
-  polarNight3: '#4C566A',
+  polarNight0: '#1E222A', 
+  polarNight1: '#252A34',
+  polarNight2: '#2E3440',
+  polarNight3: '#3B4252',
+  snowStorm0: '#E5E9F0', 
+  snowStorm1: '#F4F7FB',
+  snowStorm2: '#FFFFFF',
 
-  snowStorm0: '#D8DEE9',
-  snowStorm1: '#E5E9F0',
-  snowStorm2: '#ECEFF4',
+  // Vibrant Accents
+  frost0: '#8FBCBB',
+  frost1: '#5AA9BE',
+  frost2: '#81A1C1', 
+  frost3: '#5E81AC', 
+  frostBright: '#88C0D0',
 
-  frost0: '#8FBCBB', // Teal
-  frost1: '#88C0D0', // Cyan
-  frost2: '#81A1C1', // Light Blue
-  frost3: '#5E81AC', // Dark Blue
-
-  auroraRed: '#BF616A',
+  auroraRed: '#D64652',
+  auroraRedBright: '#FF6B6B',
+  
   auroraOrange: '#D08770',
   auroraYellow: '#EBCB8B',
-  auroraGreen: '#A3BE8C',
-  auroraPurple: '#B48EAD',
+  
+  auroraGreen: '#8FBC8B',
+  auroraGreenBright: '#A3BE8C',
 
-  // Brighter Chart Colors
-  chartSystolic: '#FF6B6B',
-  chartDiastolic: '#88E079', // Brighter version of Aurora Green
+  auroraPurple: '#B48EAD',
+};
+
+// 2. Semantic Palette - Light (High Contrast)
+const LightPalette = {
+  primary: Nord.frost3,
+  onPrimary: '#FFFFFF',
+  primaryContainer: '#D2E3F0',
+  onPrimaryContainer: '#233242',
+
+  secondary: Nord.frost1,
+  onSecondary: '#FFFFFF',
+  secondaryContainer: '#D5F1F6',
+  onSecondaryContainer: '#1A3B45',
+
+  tertiary: Nord.auroraPurple,
+  onTertiary: '#FFFFFF',
+  
+  background: '#F8F9FA', 
+  onBackground: '#1A1C23',  
+  
+  surface: '#FFFFFF',       
+  onSurface: '#1A1C23',
+  surfaceVariant: '#E1E5EA',   
+  onSurfaceVariant: '#4C566A', 
+  
+  error: '#BA1A1A',          
+  onError: '#FFFFFF',
+  errorContainer: '#FFDAD6',
+  onErrorContainer: '#410002',
+
+  outline: '#707887', 
+  outlineVariant: '#C0C6D0',    
+
+  shadow: '#000000',
+};
+
+// 3. Semantic Palette - Dark (Deep & Vivid)
+const DarkPalette = {
+  primary: Nord.frostBright, 
+  onPrimary: '#1E222A',
+  primaryContainer: Nord.frost3,
+  onPrimaryContainer: '#E5E9F0',
+
+  secondary: Nord.frost2,
+  onSecondary: '#1E222A',
+  secondaryContainer: '#3B4252',
+  onSecondaryContainer: '#E5E9F0',
+
+  tertiary: Nord.auroraPurple,
+  onTertiary: '#1E222A',
+
+  background: '#121419',
+  onBackground: '#ECEFF4',   
+  
+  surface: '#1E222A',       
+  onSurface: '#ECEFF4',
+  surfaceVariant: '#2E3440',
+  onSurfaceVariant: '#D8DEE9', 
+
+  error: '#FFB4AB',    
+  onError: '#690005',
+  errorContainer: '#93000A',
+  onErrorContainer: '#FFDAD6',
+
+  outline: '#8F9BB3',
+  outlineVariant: '#434C5E',
+
+  shadow: '#000000',
 };
 
 export const nordLightTheme = {
   ...MD3LightTheme,
   colors: {
     ...MD3LightTheme.colors,
-    primary: Nord.frost3,
-    onPrimary: Nord.snowStorm2,
-    secondary: Nord.frost1,
-    background: Nord.snowStorm2,
-    surface: Nord.snowStorm0,
-    onSurface: Nord.polarNight0,
-    error: Nord.auroraRed,
+    primary: LightPalette.primary,
+    onPrimary: LightPalette.onPrimary,
+    primaryContainer: LightPalette.primaryContainer,
+    onPrimaryContainer: LightPalette.onPrimaryContainer,
+    secondary: LightPalette.secondary,
+    onSecondary: LightPalette.onSecondary,
+    secondaryContainer: LightPalette.secondaryContainer,
+    onSecondaryContainer: LightPalette.onSecondaryContainer,
+    background: LightPalette.background,
+    onBackground: LightPalette.onBackground,
+    surface: LightPalette.surface,
+    onSurface: LightPalette.onSurface,
+    surfaceVariant: LightPalette.surfaceVariant,
+    onSurfaceVariant: LightPalette.onSurfaceVariant,
+    error: LightPalette.error,
+    elevation: {
+        level1: '#FFFFFF',
+        level2: '#F5F5F5',
+        level3: '#EEEEEE',
+        level4: '#E0E0E0',
+        level5: '#E0E0E0',
+    },
+    outline: LightPalette.outline,
+    outlineVariant: LightPalette.outlineVariant,
+    shadow: LightPalette.shadow,
+  },
+  custom: {
+      success: '#2E7D32',
+      warning: '#F57F17',
+      info: LightPalette.primary,
+      card: LightPalette.surface,
+      chart: {
+        systolic: '#D32F2F',
+        diastolic: '#2E7D32', 
+        label: '#455A64',
+      }
   }
 };
 
@@ -45,50 +144,73 @@ export const nordDarkTheme = {
   ...MD3DarkTheme,
   colors: {
     ...MD3DarkTheme.colors,
-    primary: Nord.frost2,
-    onPrimary: Nord.polarNight0,
-    secondary: Nord.frost1,
-    background: Nord.polarNight0,
-    surface: Nord.polarNight1,
-    onSurface: Nord.snowStorm2,
-    error: Nord.auroraRed,
+    primary: DarkPalette.primary,
+    onPrimary: DarkPalette.onPrimary,
+    primaryContainer: DarkPalette.primaryContainer,
+    onPrimaryContainer: DarkPalette.onPrimaryContainer,
+    secondary: DarkPalette.secondary,
+    onSecondary: DarkPalette.onSecondary,
+    secondaryContainer: DarkPalette.secondaryContainer,
+    onSecondaryContainer: DarkPalette.onSecondaryContainer,
+    background: DarkPalette.background,
+    onBackground: DarkPalette.onBackground,
+    surface: DarkPalette.surface,
+    onSurface: DarkPalette.onSurface,
+    surfaceVariant: DarkPalette.surfaceVariant,
+    onSurfaceVariant: DarkPalette.onSurfaceVariant,
+    error: DarkPalette.error,
     elevation: {
-        level1: Nord.polarNight1,
-        level2: Nord.polarNight2,
-        level3: Nord.polarNight3,
-        level4: Nord.polarNight3,
-        level5: Nord.polarNight3,
-    }
+        level1: '#252A34',
+        level2: '#2E3440',
+        level3: '#3B4252',
+        level4: '#434C5E',
+        level5: '#4C566A',
+    },
+    outline: DarkPalette.outline,
+    outlineVariant: DarkPalette.outlineVariant,
+    shadow: DarkPalette.shadow,
+  },
+  custom: {
+      success: Nord.auroraGreenBright,
+      warning: Nord.auroraYellow,
+      info: DarkPalette.primary,
+      card: DarkPalette.surface,
+      chart: {
+        systolic: '#FF8A80',
+        diastolic: '#B9F6CA', 
+        label: '#E5E9F0',
+      }
   }
 };
 
-const tintColorLight = Nord.frost3;
-const tintColorDark = Nord.frost1;
+const tintColorLight = LightPalette.primary;
+const tintColorDark = DarkPalette.primary;
 
 export default {
   Nord,
   light: {
-    text: Nord.polarNight0,
-    background: Nord.snowStorm2,
+    text: LightPalette.onBackground,
+    background: LightPalette.background,
     tint: tintColorLight,
-    tabIconDefault: Nord.polarNight3,
+    tabIconDefault: LightPalette.outline,
     tabIconSelected: tintColorLight,
-    card: Nord.snowStorm0,
-    border: Nord.snowStorm1,
-    success: Nord.auroraGreen,
-    warning: Nord.auroraYellow,
-    error: Nord.auroraRed,
+    card: LightPalette.surface,
+    border: LightPalette.surfaceVariant,
+    success: '#2E7D32',
+    warning: '#F57F17',
+    error: LightPalette.error,
   },
   dark: {
-    text: Nord.snowStorm2,
-    background: Nord.polarNight0,
+    text: DarkPalette.onBackground,
+    background: DarkPalette.background,
     tint: tintColorDark,
-    tabIconDefault: Nord.polarNight3,
+    tabIconDefault: DarkPalette.outline,
     tabIconSelected: tintColorDark,
-    card: Nord.polarNight1,
-    border: Nord.polarNight2,
-    success: Nord.auroraGreen,
+    card: DarkPalette.surface,
+    border: DarkPalette.surfaceVariant,
+    success: Nord.auroraGreenBright,
     warning: Nord.auroraYellow,
-    error: Nord.auroraRed,
+    error: DarkPalette.error,
   },
 };
+

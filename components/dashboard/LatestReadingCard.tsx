@@ -1,4 +1,3 @@
-import { Nord } from '@/constants/Colors';
 import { analyzeBP } from '@/utils/BloodPressure';
 import { StyleSheet, View } from 'react-native';
 import { Text, useTheme } from 'react-native-paper';
@@ -15,10 +14,11 @@ export function LatestReadingCard({ latest }: LatestReadingCardProps) {
     const theme = useTheme();
 
     return (
-        <View style={[styles.sectionContainer, { backgroundColor: theme.colors.surface }]}>
+        <View style={[styles.card, { backgroundColor: theme.colors.surface, borderColor: theme.colors.outlineVariant }]}>
+            <View style={{ padding: 16 }}>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                 <View>
-                    <Text variant="labelLarge" style={{ color: theme.colors.secondary, marginBottom: 4 }}>Last Recorded</Text>
+                    <Text variant="labelLarge" style={{ color: theme.colors.primary, marginBottom: 4 }}>Last Recorded</Text>
                     <View style={{ flexDirection: 'row', alignItems: 'baseline' }}>
                             <Text variant="displayMedium" style={{ fontWeight: 'bold', color: theme.colors.onSurface, letterSpacing: -1 }}>
                             {latest ? `${latest.systolic}/${latest.diastolic}` : '--/--'}
@@ -35,7 +35,7 @@ export function LatestReadingCard({ latest }: LatestReadingCardProps) {
                                 backgroundColor: analysis.color, 
                                 borderRadius: 12, paddingHorizontal: 12, paddingVertical: 6, marginBottom: 8
                             }}>
-                                <Text style={{ color: Nord.polarNight0, fontWeight: 'bold', fontSize: 12 }}>
+                                <Text style={{ color: '#FFFFFF', fontWeight: 'bold', fontSize: 12 }}>
                                     {analysis.status}
                                 </Text>
                             </View>
@@ -51,14 +51,15 @@ export function LatestReadingCard({ latest }: LatestReadingCardProps) {
                         </View>
                 </View>
             </View>
+            </View>
         </View>
     );
 }
 
 const styles = StyleSheet.create({
-    sectionContainer: {
-        borderRadius: 20,
-        padding: 20,
+    card: {
         marginBottom: 16,
+        borderRadius: 16,
+        borderWidth: 1, // Subtle border
     },
 });

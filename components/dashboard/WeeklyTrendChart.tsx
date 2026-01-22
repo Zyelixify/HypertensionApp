@@ -81,7 +81,7 @@ export function WeeklyTrendChart({ readings }: WeeklyTrendChartProps) {
             if (!d.hasReading || d.sys === null || d.dia === null) {
                 return {
                     label: d.label,
-                    labelTextStyle: { color: theme.colors.outline, fontSize: 12 },
+                    labelTextStyle: { color: theme.custom.chart.label, fontSize: 12 },
                     stacks: [{ value: 0, color: 'transparent' }],
                 };
             }
@@ -95,7 +95,7 @@ export function WeeklyTrendChart({ readings }: WeeklyTrendChartProps) {
 
             return {
                 label: d.label,
-                labelTextStyle: { color: theme.colors.outline, fontSize: 12 },
+                labelTextStyle: { color: theme.custom.chart.label, fontSize: 12 },
                 stacks: [
                     { value: bottomSpacing, color: 'transparent' },
                     { 
@@ -126,7 +126,7 @@ export function WeeklyTrendChart({ readings }: WeeklyTrendChartProps) {
     }, [readings, weekOffset, theme]);
 
     return (
-        <View style={[styles.sectionContainer, { backgroundColor: theme.colors.surface, padding: 0, paddingVertical: 16 }]}>
+        <View style={[styles.sectionContainer, { backgroundColor: theme.colors.surface, borderColor: theme.colors.outlineVariant, borderWidth: 1, padding: 0, paddingVertical: 16 }]}>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 20, marginBottom: 20 }}>
                 <Text variant="labelLarge" style={{ color: theme.colors.secondary, fontWeight: '600' }}>Weekly Trend</Text>
             </View>
@@ -165,10 +165,10 @@ export function WeeklyTrendChart({ readings }: WeeklyTrendChartProps) {
                                     <View style={{ height: 90, width: 100, justifyContent: 'center', marginTop: -30, marginLeft: -40 }}>
                                         <View style={{ 
                                             padding: 10, 
-                                            backgroundColor: theme.colors.backdrop, 
+                                            backgroundColor: theme.colors.surface, 
                                             borderRadius: 8,
                                             borderWidth: 1,
-                                            borderColor: theme.colors.outline
+                                            borderColor: theme.colors.outlineVariant
                                         }}>
                                             <Text style={{ color: theme.colors.primary, fontSize: 12, marginBottom: 4 }}>{item.dateLabel || item.label}</Text>
                                             <Text style={{ color: theme.colors.primary, fontWeight: 'bold' }}>
@@ -217,7 +217,7 @@ export function WeeklyTrendChart({ readings }: WeeklyTrendChartProps) {
 
 const styles = StyleSheet.create({
     sectionContainer: {
-        borderRadius: 20,
+        borderRadius: 16,
         padding: 20,
         marginBottom: 16,
     },

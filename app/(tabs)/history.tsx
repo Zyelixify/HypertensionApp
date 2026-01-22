@@ -22,7 +22,7 @@ export default function HistoryScreen() {
   );
 
   const renderItem = ({ item }: { item: BPReading }) => (
-      <View style={[styles.sectionContainer, { backgroundColor: theme.colors.surface }]}>
+      <View style={[styles.sectionContainer, { backgroundColor: theme.colors.surface, borderWidth: 1, borderColor: theme.colors.outlineVariant }]}>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
               <View>
                   <Text variant="labelLarge" style={{ color: theme.colors.secondary, marginBottom: 4 }}>
@@ -85,8 +85,8 @@ const styles = StyleSheet.create({
         padding: 16,
     },
     sectionContainer: {
-        borderRadius: 20,
-        padding: 20,
+        borderRadius: 16,
+        padding: 12,
         marginBottom: 12,
     },
 });

@@ -35,7 +35,8 @@ export default function DashboardScreen() {
                     alignItems: 'center', 
                     paddingHorizontal: 12, 
                     paddingVertical: 6, 
-                    backgroundColor: theme.colors.primaryContainer, 
+                    borderColor: theme.colors.primaryContainer, 
+                    borderWidth: 2,
                     borderRadius: 20,
                 }}>
                     <MaterialCommunityIcons name="fire" size={24} color={theme.colors.primary} />

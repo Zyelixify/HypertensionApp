@@ -3,10 +3,7 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { Tabs, useRouter } from 'expo-router';
 import React from 'react';
 import { View } from 'react-native';
-
-import { useClientOnlyValue } from '@/components/useClientOnlyValue';
-import { useColorScheme } from '@/components/useColorScheme';
-import Colors from '@/constants/Colors';
+import { useTheme } from 'react-native-paper';
 
 // You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
 function TabBarIcon(props: {
@@ -17,30 +14,29 @@ function TabBarIcon(props: {
 }
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
-  const themeColors = Colors[colorScheme ?? 'light'];
+  const theme = useTheme();
   const router = useRouter();
 
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: themeColors.tint,
-        tabBarInactiveTintColor: themeColors.tabIconDefault,
+        tabBarActiveTintColor: theme.colors.primary,
+        tabBarInactiveTintColor: theme.colors.outline,
         tabBarStyle: {
-            backgroundColor: themeColors.background,
-            borderTopColor: themeColors.border,
+            backgroundColor: theme.colors.background,
+            borderTopColor: theme.colors.outlineVariant,
         },
         headerStyle: {
-            backgroundColor: themeColors.background,
+            backgroundColor: theme.colors.background,
             elevation: 0,
+            shadowOpacity: 0,
             borderBottomWidth: 1,
-            borderBottomColor: themeColors.border,
+            borderBottomColor: theme.colors.outlineVariant,
         },
         headerTitleStyle: {
             fontWeight: 'bold',
         },
-        headerTintColor: themeColors.text,
-        headerShown: useClientOnlyValue(false, true),
+        headerTintColor: theme.colors.onBackground,
       }}>
 
       <Tabs.Screen
@@ -68,20 +64,20 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => (
             <View
                 style={{
-                    backgroundColor: themeColors.tint,
+                    backgroundColor: theme.colors.primary,
                     height: 56,
                     width: 56,
                     borderRadius: 28,
                     justifyContent: 'center',
                     alignItems: 'center',
-                    shadowColor: "#000",
+                    shadowColor: theme.colors.shadow,
                     shadowOffset: { width: 0, height: 4 },
                     shadowOpacity: 0.3,
                     shadowRadius: 4,
                     elevation: 5,
                 }}
             >
-                <MaterialCommunityIcons name="plus" size={48} color="#FFF" />
+                <MaterialCommunityIcons name="plus" size={48} color={theme.colors.onPrimary} />
             </View>
           ),
           tabBarLabel: () => null, // No label

@@ -1,4 +1,3 @@
-import { Nord } from '@/constants/Colors';
 import { useUnifiedData } from '@/hooks/useUnifiedData';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { isSameDay } from 'date-fns';
@@ -77,7 +76,7 @@ export default function ModalScreen() {
   };
 
   return (
-    <View style={styles.overlay}>
+    <View style={[styles.overlay, { backgroundColor: theme.colors.backdrop }]}>
         {/* Transparent Backdrop */}
         <Pressable style={styles.backdrop} onPress={handleDismiss} />
 
@@ -90,21 +89,26 @@ export default function ModalScreen() {
                 entering={SlideInDown.springify().damping(18).mass(0.6).stiffness(250)}
                 style={[
                     styles.sheet, 
-                    { backgroundColor: theme.colors.elevation.level2 },
+                    { 
+                        backgroundColor: theme.colors.surface,
+                        borderColor: theme.colors.outlineVariant,
+                        borderWidth: 1,
+                        borderBottomWidth: 0, // Open at bottom
+                    },
                     animatedSheetStyle
                 ]}
             >
                 {showSuccess ? (
                     <View style={{ alignItems: 'center', justifyContent: 'center' }}>
                         <Animated.View style={[animatedOpacityStyle, { alignItems: 'center', width: '100%' }]}>
-                            <MaterialCommunityIcons name="check-circle-outline" size={56} color={Nord.auroraGreen} />
-                            <Text variant="titleLarge" style={{ marginTop: 12, fontWeight: 'bold' }}>Added</Text>
+                            <MaterialCommunityIcons name="check-circle-outline" size={56} color={theme.custom.success} />
+                            <Text variant="titleLarge" style={{ marginTop: 12, fontWeight: 'bold', color: theme.custom.success }}>Added</Text>
                             
                             <View style={{ flexDirection: 'row', marginTop: 20, width: '100%', justifyContent: 'space-around', paddingHorizontal: 40 }}>
                                  <View style={{ alignItems: 'center' }}>
                                     <Text variant="bodySmall" style={{color: theme.colors.secondary}}>Streak</Text>
                                     <View style={{flexDirection: 'row', alignItems: 'center', marginTop: 4}}>
-                                        <MaterialCommunityIcons name="fire" size={20} color={Nord.auroraRed} />
+                                        <MaterialCommunityIcons name="fire" size={20} color={theme.custom.chart.systolic} />
                                         <Text variant="titleMedium" style={{ fontWeight: 'bold', marginLeft: 4 }}>{newStreak}</Text>
                                     </View>
                                  </View>
@@ -119,7 +123,7 @@ export default function ModalScreen() {
                 ) : (
                     <>
                     
-                <View style={styles.handle} />
+                <View style={[styles.handle, { backgroundColor: theme.colors.outline }]} />
                 
                 <View style={{ marginBottom: 24, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                     <Text variant="titleLarge" style={{ fontWeight: 'bold' }}>New Entry</Text>
@@ -136,14 +140,14 @@ export default function ModalScreen() {
                             value={systolic} 
                             onChangeText={setSystolic}
                         style={{ 
-                            backgroundColor: theme.colors.elevation.level2, 
+                            backgroundColor: 'transparent', 
                             fontSize: 24, 
                             height: 60,
                             width: '100%',
                         }}
                         contentStyle={{ fontSize: 24, fontWeight: 'bold' }}
                         underlineColor={theme.colors.outline}
-                        activeUnderlineColor={Nord.auroraRed}
+                        activeUnderlineColor={theme.custom.chart.systolic}
                         right={<TextInput.Affix text="mmHg" />}
                     />
                 </View>
@@ -156,14 +160,14 @@ export default function ModalScreen() {
                         value={diastolic} 
                         onChangeText={setDiastolic}
                         style={{ 
-                            backgroundColor: theme.colors.elevation.level2, 
+                            backgroundColor: 'transparent', 
                             fontSize: 24, 
                             height: 60,
                             width: '100%',
                         }}
                         contentStyle={{ fontSize: 24, fontWeight: 'bold' }}
                         underlineColor={theme.colors.outline}
-                        activeUnderlineColor={Nord.auroraGreen}
+                        activeUnderlineColor={theme.custom.chart.diastolic}
                         right={<TextInput.Affix text="mmHg" />}
                     />
                 </View>
@@ -199,14 +203,6 @@ const styles = StyleSheet.create({
         borderTopRightRadius: 28,
         padding: 24,
         paddingTop: 12,
-        shadowColor: "#000",
-        shadowOffset: {
-            width: 0,
-            height: -2,
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        elevation: 5,
     },
     handle: {
         width: 40,

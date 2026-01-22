@@ -125,11 +125,11 @@ export const HealthService = {
     // Shared formatting helper
     const processAndroidRecords = (records: any[]) => {
         return records
-            .filter(r => r.systolic?.pressure && r.diastolic?.pressure) // Filter out undefined/invalid readings
+            .filter(r => r.systolic?.inMillimetersOfMercury && r.diastolic?.inMillimetersOfMercury) // Filter out undefined/invalid readings
             .map(r => ({
                 id: r.metadata?.id || Math.random().toString(),
-                systolic: r.systolic.pressure,
-                diastolic: r.diastolic.pressure,
+                systolic: r.systolic.inMillimetersOfMercury,
+                diastolic: r.diastolic.inMillimetersOfMercury,
                 timestamp: new Date(r.time).getTime(),
                 source: 'health_connect'
             }));
@@ -154,8 +154,10 @@ export const HealthService = {
                     startTime: new Date(new Date().getTime() - 90 * 24 * 60 * 60 * 1000).toISOString()
                 }
             });
-            // Ensure result.records exists, otherwise fallback to result if it is an array, or empty
-            const records = result.records || (Array.isArray(result) ? result : []);
+            
+            console.log('[HealthConnect] Get results size:', result.records.length);
+
+            const records = result.records
             return processAndroidRecords(records);
         } catch (e) {
             console.error('[HealthConnect] Read Error:', e);
