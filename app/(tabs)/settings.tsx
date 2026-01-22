@@ -1,3 +1,4 @@
+import { useSession } from '@/context/SessionContext';
 import { useThemeContext } from '@/context/ThemeContext';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import { HealthService, PermissionStatus } from '@/services/HealthService';
@@ -13,6 +14,7 @@ import { Button, List, Switch } from 'react-native-paper';
 export default function SettingsScreen() {
     const { theme, toggleTheme } = useThemeContext();
     const paperTheme = useAppTheme();
+    const { resetOnboarding } = useSession();
     
     // Permission states
     const [healthGranted, setHealthGranted] = useState(false);
@@ -175,47 +177,45 @@ export default function SettingsScreen() {
                 />
             </List.Section>
 
-            {__DEV__ && (
-                <List.Section>
-                    <List.Subheader style={{ color: paperTheme.colors.error, fontWeight: 'bold' }}>DEBUG</List.Subheader>
-                    <List.Item
-                        title="Populate Mock Data"
-                        description="Generate 60-100 random readings"
-                        left={props => <List.Icon {...props} icon="database-plus" color={paperTheme.colors.error} />}
-                        onPress={generateMockData}
-                        style={{ backgroundColor: paperTheme.colors.surface }}
-                    />
-                    <List.Item
-                        title="Test Notification"
-                        description="Send immediate motivational reminder"
-                        left={props => <List.Icon {...props} icon="bell-ring" color={paperTheme.colors.error} />}
-                        onPress={() => NotifService.sendDemoMotivationalReminder()}
-                        style={{ backgroundColor: paperTheme.colors.surface }}
-                    />
-                    <List.Item
-                        title="Reset Onboarding"
-                        description="Clear profile and restart setup"
-                        left={props => <List.Icon {...props} icon="restart" color={paperTheme.colors.error} />}
-                        onPress={async () => {
-                            await StorageService.clearUserProfile();
-                            router.replace('/onboarding');
-                        }}
-                        style={{ backgroundColor: paperTheme.colors.surface }}
-                    />
-                    <List.Item
-                        title="Clear All Data"
-                        description="Remove all stored readings and reset progress"
-                        left={props => <List.Icon {...props} icon="database-remove" color={paperTheme.colors.error} />}
-                        onPress={async () => {
-                            await StorageService.clearReadings();
-                            queryClient.invalidateQueries({ queryKey: ['bp', 'readings'] });
-                            queryClient.invalidateQueries({ queryKey: ['user', 'xp'] });
-                            Alert.alert("Cleared", "All data removed.");
-                        }}
-                        style={{ backgroundColor: paperTheme.colors.surface }}
-                    />
+            <List.Section>
+                <List.Subheader style={{ color: paperTheme.colors.error, fontWeight: 'bold' }}>DEBUG</List.Subheader>
+
+                <List.Item
+                    title="Populate Mock Data"
+                    description="Generate 60-100 random readings"
+                    left={props => <List.Icon {...props} icon="database-plus" color={paperTheme.colors.error} />}
+                    onPress={generateMockData}
+                    style={{ backgroundColor: paperTheme.colors.surface }}
+                />
+                <List.Item
+                    title="Test Notification"
+                    description="Send immediate motivational reminder"
+                    left={props => <List.Icon {...props} icon="bell-ring" color={paperTheme.colors.error} />}
+                    onPress={() => NotifService.sendDemoMotivationalReminder()}
+                    style={{ backgroundColor: paperTheme.colors.surface }}
+                />
+                <List.Item
+                    title="Reset Onboarding"
+                    description="Clear profile and restart setup"
+                    left={props => <List.Icon {...props} icon="restart" color={paperTheme.colors.error} />}
+                    onPress={async () => {
+                        await resetOnboarding();
+                    }}
+                    style={{ backgroundColor: paperTheme.colors.surface }}
+                />
+                <List.Item
+                    title="Clear All Data"
+                    description="Remove all stored readings and reset progress"
+                    left={props => <List.Icon {...props} icon="database-remove" color={paperTheme.colors.error} />}
+                    onPress={async () => {
+                        await StorageService.clearReadings();
+                        queryClient.invalidateQueries({ queryKey: ['bp', 'readings'] });
+                        queryClient.invalidateQueries({ queryKey: ['user', 'xp'] });
+                        Alert.alert("Cleared", "All data removed.");
+                    }}
+                    style={{ backgroundColor: paperTheme.colors.surface }}
+                />
                 </List.Section>
-            )}
 
             </ScrollView>
         </View>

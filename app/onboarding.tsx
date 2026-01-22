@@ -1,3 +1,4 @@
+import { useSession } from '@/context/SessionContext';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import { HealthService } from '@/services/HealthService';
 import { NotificationService } from '@/services/NotificationService';
@@ -17,6 +18,7 @@ import Animated, {
 export default function OnboardingScreen() {
     const router = useRouter();
     const paperTheme = useAppTheme();
+    const { setSessionOnboardingComplete } = useSession();
 
     const [step, setStep] = useState(0); // 0: Welcome, 1: Profile, 2: Permissions
     const [name, setName] = useState('');
@@ -58,8 +60,9 @@ export default function OnboardingScreen() {
         if (notifPerm) {
              try { await NotificationService.requestPermissions(); } catch(e) { console.warn(e); }
         }
-
-        router.replace('/(tabs)');
+        
+        // Update Session State - triggers redirect in RootLayout
+        setSessionOnboardingComplete(true);
     };
 
     const renderWelcome = () => (
